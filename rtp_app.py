@@ -23,6 +23,16 @@ from matplotlib.figure import Figure
 from common import rtp_1d
 
 
+def get_resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 class MplCanvas(FigureCanvas):
     """Matplotlib canvas widget for PySide6."""
     
@@ -254,9 +264,9 @@ class RTPMainWindow(QWidget):
         self.pushButton_2.setObjectName("pushButton_2")
         self.pushButton_2.setEnabled(False)
         self.horizontalLayout.addWidget(self.pushButton_2)
-        
         self.gridLayout_2.addLayout(self.horizontalLayout, 9, 2, 1, 2)
-        with open(os.path.join(os.path.abspath(__file__),"..","light_theme.qss")) as f:
+        stylesheet_path = get_resource_path("light_theme.qss")
+        with open(stylesheet_path) as f:
             self.setStyleSheet(f.read())
         
     def setupConnections(self):
